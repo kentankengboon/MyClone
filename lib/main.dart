@@ -190,7 +190,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       amount.clear();
       description.clear();
-
       //getExpList();
     }
 
