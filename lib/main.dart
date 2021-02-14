@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:expenses/register.dart';
+import 'package:expenses/services/auth.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ExpensesMain());
 }
 
-class MyApp extends StatelessWidget {
+class ExpensesMain extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -57,6 +60,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.currentUser().then((user) {
+      //setState(() {
+        if (user != null) {
+
+          //uidToCheck = user.uid;
+          //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeamPage()));
+        }else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Register()));
+        }
+      //});
+    });
+
+
+  }
+
+
+
   final formkey = GlobalKey<FormState>();
   TextEditingController description = new TextEditingController();
   TextEditingController amount = new TextEditingController();
@@ -69,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateFormat dateFormat = DateFormat('dd-MMM-yyyy');
   String oldExpList;
   String newExpLog;
+  AuthMethods authmethods = new AuthMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -215,10 +241,25 @@ class _MyHomePageState extends State<MyHomePage> {
       //setState(() {});
     }
 
+    logout(){
+      authmethods.signout();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Register()));
+    }
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(widget.theTitle),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right:10.0),
+                child: GestureDetector(
+                  onTap: () {logout();},
+                  child: Icon(Icons.exit_to_app,),
+
+            )),
+          ],
+
         ),
         //automaticallyImplyLeading: true,
         body: Builder(
