@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,8 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int currencyCode = 1;
   String currency;
   String dDate;
-  int expTypeCode =1;
+  int expTypeCode = 1;
   String expType;
+  int payTypeCode = 1;
+  String payType;
   DateFormat dateFormat = DateFormat('dd-MMM-yyyy');
   String oldExpList;
   String newExpLog;
@@ -211,7 +215,9 @@ class _MyHomePageState extends State<MyHomePage> {
               " - $currency " +
               amount.text +
               " - " +
-              description.text
+              description.text +
+              " - " +
+              payType
         ])
       });
       amount.clear();
@@ -234,6 +240,17 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
         case 2:
           expType = "PSN";
+      }
+
+      switch (payTypeCode) {
+        case 1:
+          payType = "VISA";
+          break;
+        case 2:
+          payType = "CASH";
+          break;
+        case 3:
+          payType = "OTHR";
       }
 
       await writeData();
@@ -358,6 +375,49 @@ class _MyHomePageState extends State<MyHomePage> {
                                       //});
                                     }),
                               ),
+
+                              Expanded(
+                                flex: 4,
+                                child: DropdownButton(
+                                    underline: SizedBox(),
+                                    value: payTypeCode,
+                                    items: [
+                                      DropdownMenuItem(
+                                        child: Text(
+                                          "VISA",
+                                          style: TextStyle(
+                                              color: Colors.blue, fontSize: 12),
+                                        ),
+                                        value: 1,
+                                      ),
+                                      DropdownMenuItem(
+                                        child: Text(
+                                          "CASH",
+                                          style: TextStyle(
+                                              color: Colors.blue, fontSize: 12),
+                                        ),
+                                        value: 2,
+                                      ),
+                                      DropdownMenuItem(
+                                        child: Text(
+                                          "OTHR",
+                                          style: TextStyle(
+                                              color: Colors.blue, fontSize: 12),
+                                        ),
+                                        value: 3,
+                                      ),
+
+
+                                    ],
+                                    onChanged: (value) {
+                                      //setState(() {
+                                      payTypeCode = value;
+                                      //});
+                                    }),
+                              ),
+
+
+
                               Expanded(
                                 flex: 10,
                                 child: TextFormField(
@@ -379,7 +439,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ? Text(
                                         dDate.toString(),
                                         textAlign: TextAlign.right,
-                                        style: TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: Colors.blue, fontSize: 12),
                                       )
                                     : Text(""),
                               ),
@@ -412,9 +472,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               )
                             ],
                           )),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      //SizedBox(height: 5,),
 
                       FlatButton(
                         /////// to fix ///////
